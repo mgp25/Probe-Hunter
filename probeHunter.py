@@ -1,8 +1,13 @@
-import re, os, sys, signal, threading, time, subprocess
+import re, os, sys, signal, threading, time, subprocess, argparse
 from wigle import Wigle
 from subprocess import Popen, PIPE
 from colorclass import Color
 from terminaltables import AsciiTable
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--iface", help='Interface to capture data', required=True)
+args = parser.parse_args()
 
 run = True
 wigle_flag = False
@@ -44,12 +49,11 @@ data = []
 registered = {}
 data.append([Color("{autogreen}Freq. (MHz){/autogreen}"), Color("{autogreen}Pow. (dBm){/autogreen}"), Color("{autogreen}MAC{/autogreen}"), Color("{autogreen}SSID{/autogreen}"), Color("{autogreen}Vendor{/autogreen}"), Color("{autogreen}Coords. (Lat-Long){/autogreen}")])
 
-process = Popen('tcpdump -l -I -i '+"en0"+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
+process = Popen('tcpdump -l -I -i '+args.iface+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
                 shell=True, stdout=PIPE, stderr=PIPE)
 threading.Thread(target=print_data).start()
 
 for row in iter(process.stdout.readline, b''):
-    #print(row)
     groups = re.search("Mb\/s (\d+) .* (-\d+)dBm signal .* SA:(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}) .* Probe Request .(\w+\s?\w+).", row.strip())
     if groups != None:
         signal = signal_power(int(groups.group(2)))
