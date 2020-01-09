@@ -14372,6 +14372,7 @@
 24F2DD	Radiant Zemax LLC
 24F57E	HWH CO., LTD.
 24F5AA	Samsung Electronics Co.,Ltd
+24F677	Apple, Inc.
 24FD52	Liteon Technology Corporation
 24FD5B	SmartThings, Inc.
 2804E0	FERMAX ELECTRONICA S.A.U.
@@ -15101,6 +15102,7 @@
 388602	Flexoptix GmbH
 3889DC	Opticon Sensors Europe B.V.
 388AB7	ITC Networks
+388B59	Google, Inc.
 388C50	LG Electronics
 388EE7	Fanhattan LLC
 3891D5	Hangzhou H3C Technologies Co., Limited
