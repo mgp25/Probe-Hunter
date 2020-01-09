@@ -32,6 +32,5 @@ Probe requests are an 802.11 WIFI packet type that function to automatically con
 	
 ### To Do
 
-- [ ] Channel Hopping
-- [ ] Support for 5G networks
+- [x] Channel Hopping
 - [ ] Add better support to update values on screen
