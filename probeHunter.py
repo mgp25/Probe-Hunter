@@ -19,6 +19,7 @@ def signal_handler(sig, frame):
     global run
     run = False
     print('Bye! ;)')
+    print('Exiting, please wait...')
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
@@ -48,19 +49,23 @@ def signal_power(signal):
 
 def hop_channel_mac():
     for channel in itertools.cycle(channels):
+        if run == False:
+            break
         try:
             subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-c"+str(channel)])
         except Exception as e:
             pass
-        time.sleep(10)
+        time.sleep(3)
 
 def hop_channel_linux():
     for channel in itertools.cycle(channels):
+        if run == False:
+            break
         try:
-            subprocess.run(["sudo", "iwconfig",args.iface ,"channel", channel])
+            subprocess.run(["sudo", "iwconfig" ,args.iface, "channel", channel])
         except Exception as e:
             pass
-        time.sleep(10)
+        time.sleep(3)
 
 data = []
 registered = {}
