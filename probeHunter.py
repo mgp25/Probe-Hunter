@@ -1,9 +1,10 @@
-import re, os, sys, signal, threading, time, subprocess, argparse
+import re, os, sys, signal, threading, time, subprocess, argparse, itertools
 from wigle import Wigle
 from subprocess import Popen, PIPE
 from colorclass import Color
 from terminaltables import AsciiTable
 
+channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--iface", help='Interface to capture data', required=True)
@@ -45,9 +46,31 @@ def signal_power(signal):
     else:
         return Color("{autogreen}"+str(signal)+"{/autogreen}")
 
+def hop_channel_mac():
+    for channel in itertools.cycle(channels):
+        try:
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-c"+str(channel)])
+        except Exception as e:
+            pass
+        time.sleep(10)
+
+def hop_channel_linux():
+    for channel in itertools.cycle(channels):
+        try:
+            subprocess.run(["sudo", "iwconfig",args.iface ,"channel "+str(channel)])
+        except Exception as e:
+            pass
+        time.sleep(10)
+
 data = []
 registered = {}
 data.append([Color("{autogreen}Freq. (MHz){/autogreen}"), Color("{autogreen}Pow. (dBm){/autogreen}"), Color("{autogreen}MAC{/autogreen}"), Color("{autogreen}SSID{/autogreen}"), Color("{autogreen}Vendor{/autogreen}"), Color("{autogreen}Coords. (Lat-Long){/autogreen}")])
+
+if sys.platform == "darwin":
+    subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-z"])
+    threading.Thread(target=hop_channel_mac).start()
+elif sys.platform == "linux":
+    threading.Thread(target=hop_channel_linux).start()
 
 process = Popen('tcpdump -l -I -i '+args.iface+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
                 shell=True, stdout=PIPE, stderr=PIPE)
@@ -62,7 +85,10 @@ for row in iter(process.stdout.readline, b''):
         if not groups.group(3) in registered[groups.group(4)]:
             registered[groups.group(4)].append(groups.group(3))
             company = check_vendor(groups.group(3))
-            wigle = Wigle.wigle_location(groups.group(4), wigle_flag)
+            try:
+                wigle = Wigle.wigle_location(groups.group(4), wigle_flag)
+            except Exception as e:
+                wigle_flag = '-'
             if wigle == 1:
                 wigle_flag = True
             if wigle is 2 and not wigle_flag:
