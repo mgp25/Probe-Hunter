@@ -57,7 +57,7 @@ def hop_channel_mac():
 def hop_channel_linux():
     for channel in itertools.cycle(channels):
         try:
-            subprocess.run(["sudo", "iwconfig",args.iface ,"channel "+str(channel)])
+            subprocess.run(["sudo", "iwconfig",args.iface ,"channel", channel])
         except Exception as e:
             pass
         time.sleep(10)
@@ -85,10 +85,7 @@ for row in iter(process.stdout.readline, b''):
         if not groups.group(3) in registered[groups.group(4)]:
             registered[groups.group(4)].append(groups.group(3))
             company = check_vendor(groups.group(3))
-            try:
-                wigle = Wigle.wigle_location(groups.group(4), wigle_flag)
-            except Exception as e:
-                wigle_flag = '-'
+            wigle = Wigle.wigle_location(groups.group(4), wigle_flag)
             if wigle == 1:
                 wigle_flag = True
             if wigle is 2 and not wigle_flag:
