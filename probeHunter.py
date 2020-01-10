@@ -77,7 +77,7 @@ if sys.platform == "darwin":
                     shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_mac).start()
 elif sys.platform == "linux":
-    process = Popen('tcpdump -i '+args.iface+' -e -s 256 type mgt subtype subtype probe-req', bufsize=1, universal_newlines=True,
+    process = Popen('tcpdump -i '+args.iface+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
                     shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_linux).start()
 
