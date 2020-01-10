@@ -18211,6 +18211,7 @@
 84B802	Cisco Systems, Inc
 84BA3B	CANON INC.
 84BE52	HUAWEI TECHNOLOGIES CO.,LTD
+84C0EF	Samsung Electronics Co.,Ltd
 84C1C1	Juniper Networks
 84C2E4	Jiangsu Qinheng Co., Ltd.
 84C3E8	Vaillant GmbH
