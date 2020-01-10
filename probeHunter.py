@@ -77,14 +77,14 @@ if sys.platform == "darwin":
                     shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_mac).start()
 elif sys.platform == "linux":
-    process = Popen('tcpdump -i '+args.iface+' -e -s 256 type mgt subtype probe-resp or subtype probe-req', bufsize=1, universal_newlines=True,
+    process = Popen('tcpdump -i '+args.iface+' -e -s 256 type mgt subtype subtype probe-req', bufsize=1, universal_newlines=True,
                     shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_linux).start()
 
 threading.Thread(target=print_data).start()
 
 for row in iter(process.stdout.readline, b''):
-    groups = re.search("Mb\/s (\d+) .* (-\d+)dBm signal .* SA:(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}) .* Probe Request .(\w+\s?\w+).", row.strip())
+    groups = re.search(".* Mb\/s (\d+) .* (-\d+)dBm signal .* SA:(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}) .* Probe \w+ \(([^\)]+)\)", row.strip())
     if groups != None:
         signal = signal_power(int(groups.group(2)))
         if not groups.group(4) in registered:
