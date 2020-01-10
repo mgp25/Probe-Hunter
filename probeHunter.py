@@ -73,12 +73,14 @@ data.append([Color("{autogreen}Freq. (MHz){/autogreen}"), Color("{autogreen}Pow.
 
 if sys.platform == "darwin":
     subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-z"])
+    process = Popen('tcpdump -l -I -i '+args.iface+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
+                    shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_mac).start()
 elif sys.platform == "linux":
+    process = Popen('tcpdump -i '+args.iface+' -e -s 256 type mgt subtype probe-resp or subtype probe-req', bufsize=1, universal_newlines=True,
+                    shell=True, stdout=PIPE, stderr=PIPE)
     threading.Thread(target=hop_channel_linux).start()
 
-process = Popen('tcpdump -l -I -i '+args.iface+' -e -s 256 type mgt subtype probe-req', bufsize=1, universal_newlines=True,
-                shell=True, stdout=PIPE, stderr=PIPE)
 threading.Thread(target=print_data).start()
 
 for row in iter(process.stdout.readline, b''):
