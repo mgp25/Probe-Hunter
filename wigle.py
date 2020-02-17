@@ -17,6 +17,8 @@ class Wigle:
             'paynet': False,
             'ssid': ssid
         }
+        if Wigle.AUTH == '':
+            return 1
         try:
             r = requests.get(Wigle.ENDPOINT_SEARCH, headers=headers, params=payload)
         except:
